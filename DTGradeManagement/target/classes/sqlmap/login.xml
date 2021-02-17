@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.metanetdt.manager.dao.LoginDAO">
+	<select id="studentLogin" resultType="com.metanetdt.manager.vo.StudentVO">
+		SELECT student_id AS studentId, name AS name FROM students WHERE student_id=#{studentId} AND pw=#{pw}	
+	</select>
+	<select id="professorLogin" parameterType="com.metanetdt.manager.vo.ProfessorVO" resultType="com.metanetdt.manager.vo.ProfessorVO">
+		SELECT professor_id AS professorId, name AS name FROM professors WHERE professor_id=#{professorId} AND pw=#{pw}
+	</select>
+		
+</mapper>

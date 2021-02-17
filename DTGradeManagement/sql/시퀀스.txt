@@ -1,0 +1,11 @@
+registers
+CREATE SEQUENCE register_seq
+START WITH 4
+INCREMENT BY 1
+;
+
+teachings
+CREATE SEQUENCE teaching_seq
+START WITH 4
+INCREMENT BY 1
+;

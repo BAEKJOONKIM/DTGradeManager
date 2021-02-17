@@ -1,0 +1,40 @@
+----------- STUDENTS 삽입
+INSERT INTO students
+VALUES (20153219, '임다운', '010-1111-1111', 'M', 'ldu0131@naver.com', 'thghkrl1');
+
+INSERT INTO students
+VALUES (20153220, '지홍', '010-2222-2222', 'M', 'ljh@naver.com', 'ekdskrnl1');
+
+
+---------- PROFESSORS 삽입
+INSERT INTO professors
+VALUES ('p1111', '강교수', '111-1111-1111', 'M', 'asdf@naver.com', 'metanet0131');
+
+INSERT INTO professors
+VALUES ('p2222', '박교수', '222-2222-2222', 'W', 'sdWf@naver.com', 'sdwf');
+
+
+---------- TEACHINGS 삽입
+INSERT INTO teachings
+VALUES (1, '컴퓨터공학', 15, 3, 100.00, 2021, 1, 30.0, 40.0, 30.0, 30.0, 'code1', 'p1111');
+
+INSERT INTO teachings
+VALUES (2, '전자공학', 50, 3, 100.00, 2021, 1, 30.0, 40.0, 30.0, 30.0, 'code2', 'p2222');
+
+
+--------- TEACH_TIME 삽입
+INSERT INTO teach_time
+VALUES ('월', 1, 1);
+
+
+INSERT INTO teach_time
+VALUES ('화', 2, 2);
+
+
+---------- REGISTERS 삽입
+INSERT INTO registers
+VALUES(1,30.0,30.0,20.0,20.0,'A',20153219,2);
+
+
+INSERT INTO registers
+VALUES(2,30.0,30.0,20.0,20.0,'A',20153220,1);

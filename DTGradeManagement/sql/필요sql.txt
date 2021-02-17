@@ -1,0 +1,130 @@
+학생로그인
+SELECT student_id AS studentId, name AS studentName FROM students WHERE student_id='' AND pw=''
+;
+t : students
+
+수강신청가능과목조회
+SELECT t.teaching_no AS teachingNo, t.subject_name AS subjectName, t.head_count AS headCount, t.point, tt.day, tt.period 
+FROM teachings t, teach_time tt
+WHERE t.teaching_no=tt.teaching_no AND
+t.teach_year=2021 AND t.teach_semester='1'
+;
+
+SELECT teachings.subject_code, teachings.subject_name, professors.name, teachings.point, CONCAT(teach_time.day,teach_time.period), teachings.head_count FROM teachings INNER JOIN teach_time ON teachings.teaching_no=teach_time.teaching_no INNER JOIN professors ON teachings.professor_id = professors.professor_id
+;
+
+t : teaching, teach_time, professors
+
+
+현재신청중인과목과시간비교 - 한 과목에 한 수업 별로 사용
+SELECT r.teaching_no FROM registers r, teach_time tt WHERE r.teaching_no=tt.teaching_no AND tt.day='화' AND tt.period=2
+
+t : registers, teach_time
+
+수강신청
+INSERT INTO registers(register_no, middle, finals, report, attend, grade, student_id, teaching_no) VALUES (1,NULL,NULL,NULL,NULL,NULL,'20200400',1)
+
+t : registers
+
+과목별 현재수강인원조회
+SELECT COUNT(student_id) FROM registers WHERE teaching_no=1
+;
+t : registers
+
+수강신청내역조회
+SELECT r.register_no AS registerNo, t.subject_code AS subjectCode, t.subject_name AS subjectName, point, p.name AS professorName, t.head_count AS headCount, day, period FROM registers r, teachings t, professors p, teach_time tt WHERE r.teaching_no=t.teaching_no AND p.professor_id=t.professor_id AND t.teaching_no=tt.teaching_no AND t.teach_year=2021 AND t.teach_semester='1' AND r.student_id='20153219';
+
+t : registers, teachings, professors, teach_time
+
+수강취소
+DELETE FROM registers 
+WHERE register_no=1
+;
+
+t : registers
+
+과목상세조회
+SELECT subject_code AS subjectCode, subject_name AS subjectName, p.name AS professorName, teach_year AS teachYear, teach_semester AS teachSemester, head_count AS headCount FROM teachings t, professors p WHERE t.professor_id=p.professor_id AND t.teaching_no=1
+;
+t : teachings, professors
+
+전체성적조회
+SELECT t.teach_year AS teachYear, t.teach_semester AS teachSemester
+FROM registers r, teachings t
+WHERE r.teaching_no=t.teaching_no AND r.student_id='20153219'
+GROUP BY t.teach_year, t.teach_semester
+ORDER BY teach_year DESC, teach_semester ASC
+;
+
+t : registers, teachings 
+
+학기별 성적조회
+SELECT r.register_no AS registerNo, t.subject_name AS subjectName, teach_year AS teachYear, teach_semester AS teachSemester, grade, subject_code AS subjectCode FROM teachings t, registers r WHERE t.teaching_no=r.teaching_no AND r.student_id='20200400' AND teach_year=2021 AND teach_semester='1'
+;
+
+t : registers, teachings
+
+과목별성적상세조회
+SELECT t.subject_name AS subjectName, point, teach_year AS teachYear, teach_semester AS teachSemester, p.name AS professorName, total_score AS totalScore, middle, finals, report, attend, grade FROM teachings t, registers r, professors p WHERE t.teaching_no=r.teaching_no AND p.professor_id=t.professor_id AND register_no=1
+;
+
+t : teachings, registers, professors
+
+교수로그인 
+SELECT professor_id AS professorId, name AS professorName FROM professors WHERE professor_id='' AND pw=''
+;
+
+t : professors
+
+자신의과목시간이겹치는지조회
+SELECT t.teaching_no FROM teachings t, teach_time tt WHERE t.teaching_no=tt.teaching_no AND tt.day='화' AND tt.period=2
+;
+t : teachings, teach_time
+
+과목등록
+INSERT INTO teachings(teaching_no,subject_name, head_count,point,total_score,teach_year,teach_semester,A_ratio,B_ratio,C_ratio,D_ratio,subject_code,professor_id) VALUES (1,'apple',50,200,2021,'1',30,30,30,0,1,1)
+;
+
+t : teachings
+
+학기별담당과목조회
+SELECT t.teaching_no AS teachingNo, subject_name AS subjectName, head_count AS headCount, point, tt.day AS day, tt.period AS period FROM teachings t, teach_time tt WHERE t.teaching_no=tt.teaching_no AND professor_id='' AND teach_year=2021 AND teach_semester='1'
+;
+t : teachings, teach_time
+
+과목상세조회
+SELECT t.subject_name AS subjectName, t.head_count AS headCount, point, total_score AS totalScore, teach_year AS teachYear, teach_semester AS teachSemester, tt.day AS day, tt.period AS period, A_ratio AS aRatio, B_ratio AS bRatio, C_ratio AS cRatio, D_ratio AS dRatio FROM teachings t, teach_time tt WHERE t.teaching_no=tt.teaching_no AND t.teaching_no=1
+;
+t : teachings, teach_time
+
+과목별수강학생전체조회
+SELECT s.student_id AS studentId, s.name AS studentName, middle, finals, report, attend, r.register_no
+FROM teachings t, registers r, students s
+WHERE t.teaching_no=r.teaching_no AND s.student_id=r.student_id AND
+t.teaching_no='1'
+;
+t : teachings, registers, students
+
+성적입력
+중간 
+UPDATE registers SET middle=30 WHERE register_no=1
+기말
+UPDATE registers SET finals=40 WHERE register_no=1
+과제
+UPDATE registers SET report=30 WHERE register_no=1
+출석
+UPDATE registers SET attend=10 WHERE register_no=1
+abcd
+UPDATE registers SET grade='A' WHERE register_no=1
+
+t : registers
+
+과목삭제
+DELETE FROM teachings WHERE teaching_no=1
+
+t : teachings
+
+수강인원조정
+UPDATE teachings SET head_count=40 WHERE teaching_no=1
+
+t : teachings

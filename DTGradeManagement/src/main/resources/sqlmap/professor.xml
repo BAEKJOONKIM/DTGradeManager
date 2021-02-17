@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.metanetdt.manager.dao.ProfessorDAO">
+	<select id="getSameTime" resultType="java.lang.String">
+		SELECT t.teaching_no FROM teachings t, teach_time tt WHERE t.teaching_no=tt.teaching_no AND tt.day=#{day} AND tt.period=#{period} AND t.professor_id=#{professorId}
+	</select>
+	<insert id="addSubject" parameterType="com.metanetdt.manager.vo.TeachingVO" >
+		INSERT INTO teachings(teaching_no,subject_name, head_count,point,total_score,teach_year,teach_semester,A_ratio,B_ratio,C_ratio,D_ratio,subject_code,professor_id) VALUES (teaching_seq.NEXTVAL,#{subjectName},#{headCount},#{point},#{totalScore},#{teachYear},#{teachSemester},#{aRatio},#{bRatio},#{cRatio},#{dRatio},#{subjectCode},#{professorId})
+	</insert>
+	<select id="getEmpty" resultType="java.lang.Integer">
+		SELECT teaching_no AS teachingNo FROM teachings WHERE professor_id=#{professorId} ORDER BY teaching_no DESC
+	</select>
+	<insert id="addTime">
+		INSERT INTO teach_time(day, period, teaching_no) VALUES(#{day},#{period},#{teachingNo})
+	</insert>
+	<select id="getSubjectList" resultType="com.metanetdt.manager.vo.TTTVO">
+		SELECT t.teaching_no AS teachingNo, t.teach_semester AS teachSemester, t.teach_year AS teachYear ,t.subject_code AS subjectCode, subject_name AS subjectName, head_count AS headCount, point, tt.day AS day, tt.period AS period FROM teachings t, teach_time tt WHERE t.teaching_no=tt.teaching_no AND professor_id=#{professorId} AND teach_year=#{teachYear} AND teach_semester=#{teachSemester}
+	</select>
+	<select id="getSubjectDetail" resultType="com.metanetdt.manager.vo.TTTVO">
+		SELECT t.teaching_no AS teachingNo , t.subject_name AS subjectName, t.head_count AS headCount, point, total_score AS totalScore, teach_year AS teachYear, teach_semester AS teachSemester, tt.day AS day, tt.period AS period, A_ratio AS aRatio, B_ratio AS bRatio, C_ratio AS cRatio, D_ratio AS dRatio FROM teachings t, teach_time tt WHERE t.teaching_no=tt.teaching_no AND t.teaching_no=#{teachingNo}
+	</select>
+	<select id="getStudentList" resultType="com.metanetdt.manager.vo.RTSVO">
+		SELECT t.teaching_no AS teachingNo, s.student_id AS studentId, s.name AS name, middle, finals, report, attend, r.register_no AS registerNo FROM teachings t, registers r, students s WHERE t.teaching_no=r.teaching_no AND s.student_id=r.student_id AND t.teaching_no=#{teachingNo}
+	</select>
+	<update id="setMiddleScore">
+		UPDATE registers SET middle=#{middle} WHERE register_no=#{registerNo}
+	</update>
+	<update id="setFinalScore">
+		UPDATE registers SET finals=#{finals} WHERE register_no=#{registerNo}
+	</update>
+	<update id="setReportScore">
+		UPDATE registers SET report=#{report} WHERE register_no=#{registerNo}
+	</update>
+	<update id="setAttendScore">
+		UPDATE registers SET attend=#{attend} WHERE register_no=#{registerNo}
+	</update>
+	<update id="setGrade">
+		UPDATE registers SET grade=#{grade} WHERE register_no=#{registerNo}
+	</update>
+	<delete id="deleteSubject">
+		DELETE FROM teachings WHERE teaching_no=#{teachingNo}
+	</delete>
+	<select id="getSubjectCode" parameterType="java.lang.Integer" resultType="java.lang.String">
+		SELECT subject_code AS subjectCode FROM teachings WHERE teaching_no=#{teachingNo}
+	</select>
+	
+	
+	
+</mapper>

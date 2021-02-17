@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.metanetdt.manager.dao.StudentDAO">
+	<select id="getTeachingList" resultType="com.metanetdt.manager.vo.TTTPVO">
+		SELECT t.subject_code AS subjectCode, p.name AS name, t.teaching_no AS teachingNo, t.subject_name AS subjectName, t.head_count AS headCount, point, day, period FROM teachings t, teach_time tt, professors p WHERE t.teaching_no=tt.teaching_no AND p.professor_id=t.professor_id AND t.teach_year=#{teachYear} AND t.teach_semester=#{teachSemester}
+	</select>
+	<select id="getSameTime" resultType="java.lang.String">
+		SELECT r.teaching_no FROM registers r, teach_time tt, teachings t WHERE r.teaching_no=t.teaching_no AND t.teaching_no=tt.teaching_no AND tt.day=#{day} AND tt.period=#{period} AND t.teach_year=#{teachYear} AND t.teach_semester=#{teachSemester} AND r.student_id=#{studentId}
+	</select>
+	<insert id="addRegister" parameterType="com.metanetdt.manager.vo.RegisterVO">
+		INSERT INTO registers(register_no, middle, finals, report, attend, grade, student_id, teaching_no) VALUES (register_seq.NEXTVAL,NULL,NULL,NULL,NULL,NULL,#{studentId},#{teachingNo})
+	</insert>
+	<select id="getRegisteredList" resultType="com.metanetdt.manager.vo.RTPTTVO">
+		SELECT t.teaching_no AS teachingNo, r.register_no AS registerNo, t.subject_code AS subjectCode, t.subject_name AS subjectName, point, p.name AS name, t.head_count AS headCount, day, period FROM registers r, teachings t, professors p, teach_time tt WHERE r.teaching_no=t.teaching_no AND p.professor_id=t.professor_id AND t.teaching_no=tt.teaching_no AND t.teach_year=#{teachYear} AND t.teach_semester=#{teachSemester} AND r.student_id=#{studentId}
+	</select>
+	<delete id="deleteRegister">
+		DELETE FROM registers WHERE register_no=#{registerNo}
+	</delete>
+	<select id="getRegisteredDetail" resultType="com.metanetdt.manager.vo.TPVO">
+		SELECT subject_code AS subjectCode, subject_name AS subjectName, p.name AS professorName, teach_year AS teachYear, teach_semester AS teachSemester, head_count AS headCount FROM teachings t, professors p WHERE t.professor_id=p.professor_id AND t.teaching_no=#{teachingNo}
+	</select>
+	<select id="getCurrentScoreList" resultType="com.metanetdt.manager.vo.RTVO">
+		SELECT r.register_no AS registerNo, t.subject_name AS subjectName, teach_year AS teachYear, teach_semester AS teachSemester, grade, subject_code AS subjectCode, t.professor_id AS professorId FROM teachings t, registers r WHERE t.teaching_no=r.teaching_no AND r.student_id=#{studentId} AND teach_year=#{teachYear} AND teach_semester=#{teachSemester}
+	</select>
+	
+	
+	<select id="getProfessorName" resultType="java.lang.String">
+		SELECT name FROM professors WHERE professor_id=#{professorId}
+	</select>
+	
+	
+	<select id="getScoreDetail" resultType="com.metanetdt.manager.vo.RTPVO">
+		SELECT t.subject_name AS subjectName, point, teach_year AS teachYear, teach_semester AS teachSemester, p.name AS professorName, total_score AS totalScore, middle, finals, report, attend, grade FROM teachings t, registers r, professors p WHERE t.teaching_no=r.teaching_no AND p.professor_id=t.professor_id AND register_no=#{registerNo}
+	</select>
+	<select id="getTotalScore" resultType="com.metanetdt.manager.vo.RTVO">
+		SELECT t.teach_year AS teachYear, t.teach_semester AS teachSemester FROM registers r, teachings t WHERE r.teaching_no=t.teaching_no AND r.student_id=#{studentId} GROUP BY t.teach_year, t.teach_semester ORDER BY teach_year DESC, teach_semester ASC
+	</select>
+	<select id="getSemesterScores" resultType="com.metanetdt.manager.vo.RTVO">
+		SELECT r.register_no AS registerNo, t.subject_name AS subjectName, teach_year AS teachYear, teach_semester AS teachSemester, grade, subject_code AS subjectCode FROM teachings t, registers r WHERE t.teaching_no=r.teaching_no AND r.student_id=#{studentId} AND teach_year=#{teachYear} AND teach_semester=#{teachSemester}
+	</select>
+	<select id="getCurrentCount" resultType="java.lang.Integer">
+		SELECT COUNT(student_id) FROM registers WHERE teaching_no=#{teachingNo}
+	</select>
+	<select id="getStudent" resultType="com.metanetdt.manager.vo.StudentVO">
+		SELECT student_id AS studentId, name FROM students WHERE student_id=#{studentId}
+	</select>
+	<select id="getRegisterNo" resultType="java.lang.Integer">
+		SELECT register_no AS registerNo FROM registers WHERE student_id=#{studentId} AND teaching_no=#{teachingNo}
+	</select>
+	
+	
+</mapper>
